@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuad-Calc - Calculadora de Ecuaciones Cuadráticas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    .calculator {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .calculator h1 {
+      text-align: center;
+      margin-top: 0;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      flex: 1;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    .buttons button.clear {
+      background-color: #dc3545;
+    }
+
+    .buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .buttons button.clear:hover {
+      background-color: #c82333;
+    }
+
+    .result-container {
+      margin-top: 30px;
+    }
+
+    .result-container pre {
+      background-color: #f5f5f5;
+      padding: 16px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Ecuaciones Cuadráticas</h1>
+    <div class="form-group">
+      <label for="a">Coeficiente a:</label>
+      <input type="number" id="a" placeholder="Ingrese el valor de a">
+    </div>
+    <div class="form-group">
+      <label for="b">Coeficiente b:</label>
+      <input type="number" id="b" placeholder="Ingrese el valor de b">
+    </div>
+    <div class="form-group">
+      <label for="c">Coeficiente c:</label>
+      <input type="number" id="c" placeholder="Ingrese el valor de c">
+    </div>
+    <div class="buttons">
+      <button id="calculate">Calcular</button>
+      <button class="clear" id="clear">Limpiar</button>
+    </div>
+    <div class="result-container">
+      <div id="result"></div>
+      <pre id="steps"></pre>
+    </div>
+  </div>
+
+  <script>
+    const aInput = document.getElementById('a');
+    const bInput = document.getElementById('b');
+    const cInput = document.getElementById('c');
+    const calculateButton = document.getElementById('calculate');
+    const clearButton = document.getElementById('clear');
+    const resultDiv = document.getElementById('result');
+    const stepsDiv = document.getElementById('steps');
+
+    calculateButton.addEventListener('click', () => {
+      const a = parseFloat(aInput.value);
+      const b = parseFloat(bInput.value);
+      const c = parseFloat(cInput.value);
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        resultDiv.textContent = 'Por favor, ingrese valores numéricos válidos.';
+        stepsDiv.textContent = '';
+        return;
+      }
+
+      const discriminant = b * b - 4 * a * c;
+      let steps = `Ecuación: ${a}x² + ${b}x + ${c} = 0\n`;
+
+      if (discriminant < 0) {
+        resultDiv.textContent = 'La ecuación no tiene soluciones reales.';
+        steps += 'La ecuación no tiene soluciones reales.';
+      } else if (discriminant === 0) {
+        const x = -b / (2 * a);
+        resultDiv.textContent = `La ecuación tiene una solución real: x = ${x.toFixed(2)}`;
+        steps += `Discriminante = b² - 4ac = ${b}² - 4(${a})(${c}) = ${discriminant}\n`;
+        steps += `Solución única: x = -b / (2a) = -${b} / (2 * ${a}) = ${x.toFixed(2)}`;
+      } else {
+        const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+        const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+        resultDiv.textContent = `La ecuación tiene dos soluciones reales: x1 = ${x1.toFixed(2)}, x2 = ${x2.toFixed(2)}`;
+        steps += `Discriminante = b² - 4ac = ${b}² - 4(${a})(${c}) = ${discriminant}\n`;
+        steps += `Soluciones: x1 = (-b + √(b² - 4ac)) / (2a) = (-${b} + √(${discriminant})) / (2 * ${a}) = ${x1.toFixed(2)}\n`;
+        steps += `x2 = (-b - √(b² - 4ac)) / (2a) = (-${b} - √(${discriminant})) / (2 * ${a}) = ${x2.toFixed(2)}`;
+      }
+
+      stepsDiv.textContent = steps;
+    });
+
+    clearButton.addEventListener('click', () => {
+      aInput.value = '';
+      bInput.value = '';
+      cInput.value = '';
+      resultDiv.textContent = '';
+      stepsDiv.textContent = '';
+    });
+  </script>
+</body>
+</html>
